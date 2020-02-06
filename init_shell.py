@@ -1,7 +1,14 @@
+﻿#!/usr/bin/python
+# -*- coding:utf-8 -*-
 
 import os
 import sys
 import platform
+import locale
+import subprocess
+
+local_encode = locale.getdefaultlocale()
+print("local encode : ", local_encode)
 
 global username
 cache_dir=".local"
@@ -10,16 +17,50 @@ vim8_link=""
 
 
 def CheckPip():
-    pass
+    error = os.system("pip --version")
+    if error != 0:
+        print("=======install pip=======")
+
 
 def CheckCMake():
-    pass
+    error = os.system("cmake --version")
+    if error != 0:
+        print("==========install cmake==========")
 
 def CheckGo():
-    pass
+    error = os.system("go --version")
+    if error != 0:
+        print("========install go==============")
+
+def CheckPython():
+    python_info = subprocess.check_output(["python", "--version"]).decode(local_encode[1])
+    print(python_info)
+
+def CheckVim():
+    error = os.system("vim --version")
+    if error != 0:
+        print("===== install vim =====")
+    else:
+        # check vim version , we need  >= 8.0
+        vim_info = subprocess.check_output(["vim","--version"]).decode(local_encode[1])
+        res = vim_info.split('\n', 1)
+        if int(res[0].split(' ')[4].split('.')[0]) < 8:
+            print("===== uninstall old vim version ======")
+            print("===== start install vim8 ========")
+        else:
+            print("vim version: ", res[0])
 
 def CheckVersion():
-    pass
+    if os.system("gcc -version") != 0:
+        print("Please Install gcc first!!!!")
+        exit(-1)
+
+    CheckPython()
+    CheckPython()
+    CheckCMake()
+    CheckGo()
+
+    return True
 
 def CheckOSVersion():
     sys = platform.system()
@@ -33,7 +74,7 @@ def CheckOSVersion():
 
     if sys == "Windows":
         print("Not Support windows yet")
-        exit(-1)
+        #exit(-1)
     else:
         if "centos" in plats:
             return "yum"
@@ -48,6 +89,7 @@ def Main(argv):
     packmgr = CheckOSVersion()
     print("Package Manager:", packmgr)
     print("===== start init shell =====")
+    CheckVersion()
 
 if __name__=="__main__":
     Main(sys.argv)
