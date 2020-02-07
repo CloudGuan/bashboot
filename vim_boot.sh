@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 function download_vim(){
     wget https://github.com/vim/vim/archive/v8.2.0226.tar.gz
 }
@@ -24,12 +23,15 @@ function build_vim(){
     fi 
 
     cd vim-8.2.0226
+
+    #这里必须 写 dynamic ，不然装了YCM之后会 crash  
+
     ./configure \
         --enable-multibyte \
         --enable-perlinterp \
         --enable-rubyinterp \
-        --enable-pythoninterp \
-        --enable-python3interp \
+        --enable-pythoninterp=dynamic \
+        --enable-python3interp=dynamic \
         --with-python-config-dir=/usr/lib64/python2.7/config \
         --with-python3-config-dir=/usr/local/python37/lib/python3.7/config-3.7m-x86_64-linux-gnu \
         --enable-cscope \
@@ -40,6 +42,7 @@ function build_vim(){
         --disable-netbeans \
         --prefix=/usr/local/vim8 \
         --with-compiledby="cloudguan"
+
     make -j8 
     if [ $? -gt 0  ]
     then
@@ -60,15 +63,23 @@ function deal_link(){
     ln -s /usr/local/vim/bin/vim /usr/bin/vim
 }
 
-yum remove -y vim
+# for centos 
+function yum_op(){
+    yum remove -y vim
+    yum install -y perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-Embed
+}
+
+if [ -f /usr/local/bin/vim ]; then
+    rm /usr/local/bin/vim
+fi 
+
+yum_op
 
 cd /home/cloudguan/.local/Download
 if [ ! -f v8.2.0226.tar.gz ]
 then
     download_vim 
 fi 
-
-yum install -y perl perl-devel perl-ExtUtils-ParseXS perl-ExtUtils-Embed
 
 build_vim
 

@@ -36,12 +36,23 @@ function after_check(){
 
     ln -s /usr/local/python37/bin/python3 /usr/bin/python 
     ln -s /usr/local/python37/bin/pip3 /usr/bin/pip
+    ln -s /usr/local/python37/bin/pip3 /usr/bin/pip3
+
+    #替换yum 和
+    cp ./yum /usr/bin/yum
+    cp ./urlgrabber-ext-down /usr/libexec/urlgrabber-ext-down  
 }
 
 cd /home/cloudguan/.local/Download
 
-yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
-yum install libffi-devel -y
+function yum_op(){
+    yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+    yum install libffi-devel -y
+    yum install -y python-devel
+}
+
+
+yum_op
 
 if [ ! -f Python-3.7.6.tgz ]
 then
