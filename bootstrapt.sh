@@ -9,6 +9,11 @@ fi
 
 cd .local
 
+if [ ! -d Download ] 
+then
+    mkdir Download
+fi
+
 if [ ! -d bashboot ]
 then
     git clone https://github.com/CloudGuan/bashboot.git bashboot
@@ -19,4 +24,4 @@ then
 fi
 
 cd bashboot
-python init_shell.py 
+python init_shell.py cloudguan 

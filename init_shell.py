@@ -51,7 +51,7 @@ def CheckVim():
             print("vim version: ", res[0])
 
 def CheckVersion():
-    if os.system("gcc -version") != 0:
+    if os.system("gcc --version") != 0:
         print("Please Install gcc first!!!!")
         exit(-1)
 
@@ -59,6 +59,7 @@ def CheckVersion():
     CheckPython()
     CheckCMake()
     CheckGo()
+    CheckVim()
 
     return True
 
